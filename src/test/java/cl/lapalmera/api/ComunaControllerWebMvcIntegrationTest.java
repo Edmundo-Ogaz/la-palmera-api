@@ -1,8 +1,12 @@
 package cl.lapalmera.api;
 
+import cl.lapalmera.api.controller.ComunaController;
 import cl.lapalmera.api.controller.UsuarioController;
+import cl.lapalmera.api.model.Comuna;
 import cl.lapalmera.api.model.UserModel;
+import cl.lapalmera.api.repository.ComunaRepository;
 import cl.lapalmera.api.repository.UserRepository;
+import cl.lapalmera.api.service.ComunaService;
 import cl.lapalmera.api.service.UserService;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -18,12 +22,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(UsuarioController.class)
-public class UserControllerWebMvcIntegrationTest {
+@WebMvcTest(ComunaController.class)
+public class ComunaControllerWebMvcIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -34,36 +41,15 @@ public class UserControllerWebMvcIntegrationTest {
     @MockBean
     private UserRepository userRepository;
 
-    @Test
-    public void givenAuthRequestOnPrivateService_Login_shouldSucceedWith200() throws Exception {
+    @MockBean
+    private ComunaService comunaService;
 
-        //CustomerModel customerModel = new CustomerModel(1l, "rob", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
-        UserModel customerModel = new UserModel(1l, "test", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
-        Mockito.when(userRepository.findByUsername("test@test.cl")).thenReturn(customerModel);
-
-        JSONObject data = new JSONObject();
-        data.put("username", "test@test.cl");
-        data.put("password", "password");
-
-        MvcResult result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/api/services/controller/user/login")
-                        .content(data.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-        JSONObject json = new JSONObject(content);
-        String token = (String)json.get("token");
-        Assert.notNull(token);
-    }
+    @MockBean
+    private ComunaRepository comunaRepository;
 
     @Test
-    public void givenAuthRequestOnPrivatePostService_users_shouldSucceedWith200() throws Exception {
+    public void givenAuthRequestOnPrivateService_All_shouldSucceedWith200() throws Exception {
 
-        //CustomerModel customerModel = new CustomerModel(1l, "rob", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
         UserModel customerModel = new UserModel(1l, "test", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
         Mockito.when(userRepository.findByUsername("test@test.cl")).thenReturn(customerModel);
 
@@ -97,8 +83,7 @@ public class UserControllerWebMvcIntegrationTest {
 
         MvcResult result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/users")
-                        .content(data.toString())
+                        .get("/comunas")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", authorization)
         )
@@ -107,9 +92,8 @@ public class UserControllerWebMvcIntegrationTest {
     }
 
     @Test
-    public void givenAuthRequestOnPrivateGetService_users_shouldSucceedWith200() throws Exception {
+    public void givenAuthRequestOnPrivateGetService_Search_shouldSucceedWith200() throws Exception {
 
-        //CustomerModel customerModel = new CustomerModel(1l, "rob", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
         UserModel customerModel = new UserModel(1l, "test", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
         Mockito.when(userRepository.findByUsername("test@test.cl")).thenReturn(customerModel);
 
@@ -133,17 +117,11 @@ public class UserControllerWebMvcIntegrationTest {
 
         Mockito.when(userRepository.save(any())).thenReturn(customerModel);
 
-        JSONObject data = new JSONObject();
-        data.put("password", "test");
-        data.put("firstName", "test");
-        data.put("lastName", "test");
-        data.put("email", "test@test.cl");
-
         String authorization = "Bearer " + token;
 
         MvcResult result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/users")
+                        .get("/comunas/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", authorization)
         )

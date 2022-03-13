@@ -1,6 +1,6 @@
 package cl.lapalmera.api.service;
 
-import cl.lapalmera.api.model.CustomerModel;
+import cl.lapalmera.api.model.UserModel;
 import cl.lapalmera.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("UserDetailsServiceImpl loadUserByUsername");
-        final CustomerModel customer = customerRepository.findByUsername(username);
+        final UserModel customer = customerRepository.findByUsername(username);
         System.out.println("UserDetailsServiceImpl loadUserByUsername " + customer);
         if (customer == null) {
             throw new UsernameNotFoundException(username);

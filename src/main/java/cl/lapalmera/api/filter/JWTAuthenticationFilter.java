@@ -1,6 +1,6 @@
 package cl.lapalmera.api.filter;
 
-import cl.lapalmera.api.model.CustomerModel;
+import cl.lapalmera.api.model.UserModel;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,8 +37,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                                 HttpServletResponse res) throws AuthenticationException {
         System.out.println("JWTAuthenticationFilter attemptAuthentication");
         try {
-            CustomerModel creds = new ObjectMapper()
-                    .readValue(req.getInputStream(), CustomerModel.class);
+            UserModel creds = new ObjectMapper()
+                    .readValue(req.getInputStream(), UserModel.class);
 
             /*if (!user || !pwd) {
             return res.status(400).json({

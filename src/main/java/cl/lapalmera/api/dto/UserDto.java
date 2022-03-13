@@ -1,4 +1,4 @@
-package cl.lapalmera.api.model;
+package cl.lapalmera.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
