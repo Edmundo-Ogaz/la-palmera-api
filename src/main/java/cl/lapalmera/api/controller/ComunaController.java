@@ -1,11 +1,11 @@
 package cl.lapalmera.api.controller;
 
+import cl.lapalmera.api.dto.ComunaDto;
+import cl.lapalmera.api.dto.UserDto;
 import cl.lapalmera.api.model.Comuna;
 import cl.lapalmera.api.service.ComunaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +28,17 @@ public class ComunaController {
         comuna = comuna.length() != 0 ? comuna : null;
         ciudad = ciudad.length() != 0 ? ciudad : null;
         return comunaService.findByCodigoOrCodigoCiudad(comuna, ciudad);
+    }
+
+    @PostMapping("/comunas")
+    public Comuna save(@RequestBody ComunaDto comunaDto) {
+        System.out.println("ComunaController save");
+        return comunaService.save(comunaDto);
+    }
+
+    @PutMapping("/comunas")
+    public Comuna update(@RequestBody ComunaDto comunaDto) {
+        System.out.println("ComunaController update");
+        return comunaService.update(comunaDto);
     }
 }

@@ -128,4 +128,94 @@ public class ComunaControllerWebMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
     }
+
+    @Test
+    public void givenAuthRequestOnPrivatePostService_Comunas_shouldSucceedWith200() throws Exception {
+
+        UserModel customerModel = new UserModel(1l, "test", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
+        Mockito.when(userRepository.findByUsername("test@test.cl")).thenReturn(customerModel);
+
+        JSONObject dataLogin = new JSONObject();
+        dataLogin.put("username", "test@test.cl");
+        dataLogin.put("password", "password");
+
+        MvcResult resultLogin = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/api/services/controller/user/login")
+                        .content(dataLogin.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = resultLogin.getResponse().getContentAsString();
+        JSONObject json = new JSONObject(content);
+        String token = (String)json.get("token");
+        Assert.notNull(token);
+
+        Comuna comuna = new Comuna("code", "name", "city");
+        Mockito.when(comunaRepository.save(any())).thenReturn(comuna);
+
+        String authorization = "Bearer " + token;
+
+        JSONObject data = new JSONObject();
+        dataLogin.put("code", "R02C01C05");
+        dataLogin.put("name", "Antofagasta");
+        dataLogin.put("cityCode", "R02C01");
+
+        MvcResult result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/comunas")
+                        .content(data.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", authorization)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    public void givenAuthRequestOnPrivatePutService_Comunas_shouldSucceedWith200() throws Exception {
+
+        UserModel customerModel = new UserModel(1l, "test", "test", "test@test.cl", "$2a$12$m736W0KE7HFXuWnp9m534OOE3VPVgwza19h.hBoLhP.L4Eoc5Nnqa");
+        Mockito.when(userRepository.findByUsername("test@test.cl")).thenReturn(customerModel);
+
+        JSONObject dataLogin = new JSONObject();
+        dataLogin.put("username", "test@test.cl");
+        dataLogin.put("password", "password");
+
+        MvcResult resultLogin = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/api/services/controller/user/login")
+                        .content(dataLogin.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = resultLogin.getResponse().getContentAsString();
+        JSONObject json = new JSONObject(content);
+        String token = (String)json.get("token");
+        Assert.notNull(token);
+
+        Comuna comuna = new Comuna("code", "name", "city");
+        Mockito.when(comunaRepository.save(any())).thenReturn(comuna);
+
+        String authorization = "Bearer " + token;
+
+        JSONObject data = new JSONObject();
+        dataLogin.put("code", "R02C01C05");
+        dataLogin.put("name", "Antofagasta");
+        dataLogin.put("cityCode", "R02C01");
+
+        MvcResult result = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/comunas")
+                        .content(data.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", authorization)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 }
